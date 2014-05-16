@@ -1,0 +1,53 @@
+NIDHI AGGARWAL (UFID: 03149559)
+Project Report: DBMS(COP5725) - ADVERTISING ON THE WEB
+
+I have the following files in my project: 
+"adwords.java" which has the main function to execute the project, "dropAndCreate.sql" which drops(if existing) and creates required tables, "adwords.sql" which creates a procedure "ADWORDS" and "drop.sql" which drops all the tables in the end. This procedure takes as input the 6 K values from System.in file and returns 6 OUT parameters whcih are REFCURSORS to the OUTPUT tables. "ADWORDS.JAVA" file is used to call SQLLDR to load input data, read System.in file to get username, password and K values which are then passed on to the ADWORDS procedure when the procedure is called using CALL. It executes SQLPLUS commands to execute .sql files. The the OUTPUT tables returned are looped through in adwords.java and written onto System.out files. Finally "drop.sql" drops all the tables used.
+
+1) SQLLDR: The first task was to load all the data from Queries.dat, Advertisers.dat and and Keywords.dat files to tables in SQL.I am using SQLLDR for this purpose and since SQLLDR does not guarantee loading in the same order as the file order, I retrieve queries from Queries table in an ordere BY QID.
+
+
+2) TOKENIZE: REGEXP_SUBSTR() used to tokenize a query. Since queries have different total number of keywords, so the keywords will become rows of a temp table.
+
+3) TABLES: Tables are used for storing input data and output data. Also temp tables are used for storing intermediate results like vector for each query, tokens for each query etc.
+Tables to store input: QUERIES, KEYWORDS, ADVERTISERS
+Tables to store output: OUTPUTGREEDY1STA, OUTPUTBAL1STA, OutputGB1stA,OUTPUTGREEDY2NDA, OUTPUTBAL2NDA, OUTPUTGB2NDA
+Temporary tables: ADVERTISERREMBAL, RESADID_BIDS, RESADID_FI_1STA, VECTOR, RESADID_FI_2NDA, RESBRANK, RESGRANK, RESGBRANK, RESBRANK2A, RESGRANK2A, RESGBRANK2A
+
+4) FOR LOOPS: FOR loop to iterate through the queries. Looping counter from 1 to MAX(qid) and CONTINUE if there is no qid= counter. This takes care if there is a qid missing in the sequence.
+
+5) NESTED FOR LOOPS: Also FOR loops are used for calculating VECTOR, updating output tables and the Remaining balance table which keeps track of the changing balances of advertisers when a query is processed. All these loops are nested in the outer FOR LOOP used to iterated over all the QUERIES.
+
+6) Modified temp table 'keyw' so that it can store count of the keywords
+
+7) Deleted duplicate values in 'keyw' so that it now has distinct keywords and count
+
+8) JOINS: Used joins to calculate FI value for Generalized Balance algorithms. Also used joins to get final output in output tables
+
+9) Updated tables' column values by getting values from another tables or getting output from select queries
+
+10) Inserted into tables by getting values from another tables or getting output from select queries
+
+11) Use of mathematical functions such as: SQRT(), SUM(), EXP()
+
+12) Applied mathematical operators such as * and / on columns as parameter to mathematical functions
+
+13) Use of LEFT OUTER JOIN for getting the VECTOR and calculating the similarity
+
+14) ROW_NUMBER() used to assign unique ranks to advertisers
+
+15) Updating counter for each advertiser using CASE-WHEN-THEN clause
+
+15) Use of EXECUTE IMMEDIATE to execute DDL statements
+
+16) Use of CallableStatement and prepareCall() to CALL the procedure.
+
+17) Learnt how to dynamically create a procedure using a .sql file to store the procedure code. 
+
+18) Bound IN and OUT parameters when executing the procedure ADWORDS. 1 to 6 are IN parameters and 7 to 12 are OUt parameters  which are registered using registerOutParameter() method.
+
+19) Use of java.util.Scanner, java.io.*, java.sql.*, oracle.jdbc.* to read input file, write ouput files, execute SQL statement of classes in ojdbc5.jar respectively.
+ 
+20) Use of nvl() for updating AdvertisersRemBal table in case of second auction which keeps track of advertisers' balance for all the algorithms. nvl() is used to choose the next highest bidder in case of second auction and if there is no such bidder then by default it chooses the bidder's own bid.
+
+21) Learnt to connect database with java application using Oracle JDBC connection.
